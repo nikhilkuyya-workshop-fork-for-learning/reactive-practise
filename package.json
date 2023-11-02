@@ -1,0 +1,20 @@
+{
+  "name": "reactive",
+  "packageManager": "yarn@3.6.4",
+  "volta": {
+    "node": "18.18.2",
+    "yarn": "3.6.4"
+  },
+  "scripts": {
+    "dev": "yarn concurrently \" yarn tsc -w pub-sub.ts\" \"yarn http-server\""
+  },
+  "dependencies": {
+    "tsc": "^2.0.4"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "http-server": "^14.1.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  }
+}
