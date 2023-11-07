@@ -6,7 +6,8 @@
     "yarn": "3.6.4"
   },
   "scripts": {
-    "dev": "yarn concurrently \" yarn tsc -w pub-sub.ts\" \"yarn http-server\""
+    "dev": "rm -rf dist && yarn concurrently \" yarn tsc -w\" \"yarn http-server\"",
+    "build": "yarn tsc"
   },
   "dependencies": {
     "tsc": "^2.0.4"
