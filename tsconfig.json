@@ -2,5 +2,15 @@
   "compilerOptions": {
     "lib": ["DOM","ESNext","ScriptHost"],
     "target": "ESNext",
+    "module": "ESNext",
+    "preserveWatchOutput": true,
+    "pretty": true,
+    "traceResolution": true,
+    "moduleDetection": "auto",
+    "extendedDiagnostics": false,
+    "listEmittedFiles": true,
+    "listFiles": false,
+    "outDir": "dist",
   },
+  "include": ["src/**.ts"]
 }
