@@ -5,12 +5,13 @@
     "module": "ESNext",
     "preserveWatchOutput": true,
     "pretty": true,
-    "traceResolution": true,
+    "traceResolution": false,
     "moduleDetection": "auto",
     "extendedDiagnostics": false,
     "listEmittedFiles": true,
     "listFiles": false,
-    "outDir": "dist",
+    "outDir": "dist"
   },
-  "include": ["src/**.ts"]
+  "include": ["src/**.ts"],
+  "exclude": ["dist/**"]
 }

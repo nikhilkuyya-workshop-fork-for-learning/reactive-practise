@@ -1,23 +1,23 @@
-const pubsub: {
+type PubSubType = {
   events: {[key: string]: Array<(...args: any) => void> },
-    publish: (event: string, data: any) => void,
-    subscribe: (event: string, cb: (...args: any) => any) => void,
-} = {
-  events: {},
-  publish: function(event, data){
-    if(this.events[event] && Array.isArray(this.events[event]) ){
-      this.events[event].forEach(cb => cb(data));
+  publish: (event: string, data: any) => void,
+  subscribe: (event: string, cb: (...args: any) => any) => void,
+}
+
+export const pubsub: PubSubType
+  = {
+    events: {},
+    publish: function(event, data){
+      if(this.events[event] && Array.isArray(this.events[event]) ){
+        this.events[event].forEach(cb => cb(data));
+      }
+    },
+    subscribe: function(event,cb){
+      if(!this.events[event]) this.events[event] = []
+      this.events[event].push(cb);
     }
-  },
-  subscribe: function(event,cb){
-    if(!this.events[event]) this.events[event] = []
-    this.events[event].push(cb);
   }
-}
-function log(message: string) {
-  const style = 'background-color: darkblue; color: white; font-style: italic; border: 5px solid hotpink; font-size: 2em;'
-  console.log(`%c${style}${message}`);
-}
+
 
 console.log("simple pub sub");
 
@@ -33,45 +33,48 @@ const pizzaEvent = new CustomEvent("pizzaDelivery", {
 });
 
 
-window.addEventListener("pizzaDelivery",console.log.bind(undefined,"pizza Delivery"));
+window.addEventListener("pizzaDelivery",(evt: CustomEvent) => console.log("pizza Delivery",evt.detail.name));
 window.dispatchEvent(pizzaEvent);
 
 // class custom object event target
-type PizzaAddEventPayloadType = {
-  pizza : {
-    flavor: string
-  }
+export type PizzaAddEventPayloadType = {
+  name: string;
+  content: string;
 };
 
-class PizzaStoreEvent extends EventTarget {
+export type PizzaAddEventType = CustomEvent<PizzaAddEventPayloadType>;
 
+export class PizzaStoreEvent extends EventTarget {
+  #eventName = 'pizzaAdded';
   constructor() {
     super();
   }
 
-  // static getPizzaAddEvent() {
-  //   return 'pizzaAdded';
-  // }
+  static getPizzaAddEvent() {
+    return 'pizzaAdded';
+  }
+  subscribe(cb: (event: PizzaAddEventType) => void) {
+    this.addEventListener(this.#eventName,cb); 
+  }
 
-  // addPizza(flavor: string) {
-  //   const data: PizzaAddEventPayloadType = { pizza: { flavor } };
-  //   this.dispatchEvent(
-  //     new CustomEvent<PizzaAddEventPayloadType>(
-  //       PizzaStore.getPizzaAddEvent(),{ detail: data }
-  //     )
-  //   );
-  // }
+  addPizza(flavor: string,content = 'veg') {
+    const data: PizzaAddEventPayloadType = { name: flavor, content: content};
+    this.dispatchEvent(
+      new CustomEvent<PizzaAddEventPayloadType>(
+        PizzaStoreEvent.getPizzaAddEvent(),{ detail: data }
+      )
+    );
+  }
 
 }
 
 const pizaas = new PizzaStoreEvent();
-console.log({ pizaas});
-// pizaas.addEventListener(
-//   PizzaStore.getPizzaAddEvent(),
-//   (event) => console.log('addEventListenter','pizza' + event)
-// );
 
-// pizaas.addPizza("supremene");
+pizaas.subscribe(
+  (event: PizzaAddEventType) => console.log('addEventListenter','pizza', JSON.stringify(event.detail))
+);
+const mypizza = new PizzaStoreEvent();
+mypizza.subscribe((event: PizzaAddEventType ) => console.log('mypizza',JSON.stringify(event.detail)));
 
-
-
+mypizza.addPizza("test");
+pizaas.addPizza("supremene");
